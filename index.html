@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Fancy Notes App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <canvas id="gradient-canvas"></canvas>
+    
+    <div class="container-fluid">
+        <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom animate__animated animate__fadeInDown">
+            <h1 class="h3"><i class="fas fa-book-open me-2"></i><span class="gradient-text">3D Fancy Notes</span></h1>
+            <div class="d-flex">
+                <button id="dark-mode-toggle" class="btn btn-sm btn-outline-secondary me-2" title="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="clear-all-btn" class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-trash-alt me-1"></i>Clear All
+                </button>
+            </div>
+        </header>
+        
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="card mb-4 animate__animated animate__fadeInLeft note-card-3d">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>New Note</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="note-form">
+                            <div class="mb-3 floating-label">
+                                <input type="text" class="form-control" id="note-title" placeholder=" " required>
+                                <label for="note-title">Title</label>
+                            </div>
+                            <div class="mb-3">
+                                <label for="note-content" class="form-label">Content</label>
+                                <textarea class="form-control" id="note-content" rows="5" placeholder="Write your note here..." required></textarea>
+                            </div>
+                            <div class="mb-3 color-picker-container">
+                                <label for="note-color" class="form-label">Color</label>
+                                <div class="d-flex align-items-center mb-2">
+                                    <input type="color" class="form-control form-control-color" id="note-color" value="#fff8e1" title="Choose background color">
+                                    <div class="color-preview ms-2" id="color-preview"></div>
+                                </div>
+                                <div class="color-palette">
+                                    <div class="color-option color-option-fff8e1" data-color="#fff8e1"></div>
+                                    <div class="color-option color-option-e3f2fd" data-color="#e3f2fd"></div>
+                                    <div class="color-option color-option-e8f5e9" data-color="#e8f5e9"></div>
+                                    <div class="color-option color-option-fff3e0" data-color="#fff3e0"></div>
+                                    <div class="color-option color-option-fce4ec" data-color="#fce4ec"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Priority</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="priority" id="priority-low" value="low" autocomplete="off" checked>
+                                    <label class="btn btn-outline-success priority-btn" for="priority-low">Low</label>
+                                    <input type="radio" class="btn-check" name="priority" value="medium" id="priority-medium" autocomplete="off">
+                                    <label class="btn btn-outline-warning priority-btn" for="priority-medium">Medium</label>
+                                    <input type="radio" class="btn-check" name="priority" value="high" id="priority-high" autocomplete="off">
+                                    <label class="btn btn-outline-danger priority-btn" for="priority-high">High</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="note-category" class="form-label">Category</label>
+                                <select id="note-category" class="form-select fancy-select">
+                                    <option value="general">General</option>
+                                    <option value="work">Work</option>
+                                    <option value="personal">Personal</option>
+                                    <option value="ideas">Ideas</option>
+                                    <option value="shopping">Shopping</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 form-check form-switch fancy-switch">
+                                <input type="checkbox" class="form-check-input" id="note-readonly">
+                                <label class="form-check-label" for="note-readonly">Read-Only</label>
+                                <small class="text-muted d-block">(Cannot be edited after creation)</small>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check form-switch fancy-switch">
+                                    <input class="form-check-input" type="checkbox" id="note-protect-toggle">
+                                    <label class="form-check-label" for="note-protect-toggle">Password Protect</label>
+                                </div>
+                                <div id="password-fields">
+                                    <div class="mb-2 floating-label">
+                                        <input type="password" class="form-control" id="note-password" placeholder=" ">
+                                        <label for="note-password">Password</label>
+                                        <i class="fas fa-eye password-toggle-icon" id="toggle-password"></i>
+                                    </div>
+                                    <div class="mb-2 floating-label">
+                                        <input type="password" class="form-control" id="note-confirm-password" placeholder=" ">
+                                        <label for="note-confirm-password">Confirm Password</label>
+                                        <i class="fas fa-eye password-toggle-icon" id="toggle-confirm-password"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 save-btn">
+                                <i class="fas fa-save me-1"></i>Save Note
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card mb-4 animate__animated animate__fadeInLeft animate__delay-1s note-card-3d">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filters</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3 floating-label">
+                            <input type="text" id="search-notes" class="form-control" placeholder=" ">
+                            <label for="search-notes">Search notes...</label>
+                            <button class="btn btn-outline-secondary search-clear-btn" type="button" id="clear-search" title="Clear search">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="mb-3">
+                            <label for="priority-filter" class="form-label">Priority</label>
+                            <select id="priority-filter" class="form-select fancy-select" aria-label="Priority">
+                                <option value="all">All Priorities</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category-filter" class="form-label">Category</label>
+                            <select id="category-filter" class="form-select fancy-select">
+                                <option value="all">All Categories</option>
+                                <option value="general">General</option>
+                                <option value="work">Work</option>
+                                <option value="personal">Personal</option>
+                                <option value="ideas">Ideas</option>
+                                <option value="shopping">Shopping</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="protection-filter" class="form-label">Protection</label>
+                            <select id="protection-filter" class="form-select fancy-select">
+                                <option value="all">All Notes</option>
+                                <option value="protected">Protected Only</option>
+                                <option value="unprotected">Unprotected Only</option>
+                            </select>
+                        </div>
+                        <button id="sort-by-date" class="btn btn-outline-secondary w-100 mb-2 sort-btn">
+                            <i class="fas fa-sort me-1"></i>Sort by Date
+                        </button>
+                        <button id="sort-by-priority" class="btn btn-outline-secondary w-100 sort-btn">
+                            <i class="fas fa-sort me-1"></i>Sort by Priority
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-9">
+                <div class="card animate__animated animate__fadeInRight note-card-3d">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-book me-2"></i>Your Notes</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="notes-status" class="alert alert-info floating-alert floating-3d">
+                            You have <span id="notes-count">0</span> notes
+                        </div>
+                        <div id="notes-container" class="row gy-3">
+                            <div class="col-12 text-center py-5 empty-state animate__animated animate__fadeIn">
+                                <i class="fas fa-book-open fa-3x text-muted mb-3 floating-3d"></i>
+                                <p class="text-muted">No notes found. Create your first note!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Note Modal -->
+    <div class="modal fade" id="editNoteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content note-card-3d">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Note</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-note-form">
+                        <input type="hidden" id="edit-note-id">
+                        <div class="mb-3 floating-label">
+                            <input type="text" class="form-control" id="edit-note-title" required>
+                            <label for="edit-note-title">Title</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-note-content" class="form-label">Content</label>
+                            <textarea class="form-control" id="edit-note-content" rows="5" required></textarea>
+                        </div>
+                        <div class="mb-3 color-picker-container">
+                            <label for="edit-note-color" class="form-label">Color</label>
+                            <div class="d-flex align-items-center mb-2">
+                                <input type="color" class="form-control form-control-color" id="edit-note-color">
+                                <div class="color-preview ms-2" id="edit-color-preview"></div>
+                            </div>
+                            <div class="color-palette">
+                                <div class="color-option color-option-fff8e1" data-color="#fff8e1"></div>
+                                <div class="color-option color-option-e3f2fd" data-color="#e3f2fd"></div>
+                                <div class="color-option color-option-e8f5e9" data-color="#e8f5e9"></div>
+                                <div class="color-option color-option-fff3e0" data-color="#fff3e0"></div>
+                                <div class="color-option color-option-fce4ec" data-color="#fce4ec"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-note-category" class="form-label">Category</label>
+                            <select id="edit-note-category" class="form-select fancy-select">
+                                <option value="general">General</option>
+                                <option value="work">Work</option>
+                                <option value="personal">Personal</option>
+                                <option value="ideas">Ideas</option>
+                                <option value="shopping">Shopping</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Priority</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="edit-priority" id="edit-priority-low" value="low" autocomplete="off">
+                                <label class="btn btn-outline-success priority-btn" for="edit-priority-low">Low</label>
+                                <input type="radio" class="btn-check" name="edit-priority" value="medium" id="edit-priority-medium" autocomplete="off">
+                                <label class="btn btn-outline-warning priority-btn" for="edit-priority-medium">Medium</label>
+                                <input type="radio" class="btn-check" name="edit-priority" value="high" id="edit-priority-high" autocomplete="off">
+                                <label class="btn btn-outline-danger priority-btn" for="edit-priority-high">High</label>
+                            </div>
+                        </div>
+                        <div class="mb-3 form-check form-switch fancy-switch">
+                            <input type="checkbox" class="form-check-input" id="edit-note-readonly" disabled>
+                            <label class="form-check-label" for="edit-note-readonly">Read-Only</label>
+                        </div>
+                        <div class="mb-3 form-check form-switch fancy-switch">
+                            <input class="form-check-input" type="checkbox" id="edit-note-protect-toggle" disabled>
+                            <label class="form-check-label" for="edit-note-protect-toggle">Password Protected</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary save-btn" id="save-edit-btn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Prompt Modal -->
+    <div class="modal fade" id="passwordPromptModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content note-card-3d">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title"><i class="fas fa-lock me-2"></i>Enter Password</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This note is password protected. Please enter the password to view it.</p>
+                    <div class="mb-3 floating-label">
+                        <input type="password" class="form-control" id="view-note-password" placeholder=" ">
+                        <label for="view-note-password">Password</label>
+                        <i class="fas fa-eye password-toggle-icon" id="toggle-view-password"></i>
+                        <div class="invalid-feedback" id="password-error"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary unlock-btn" id="submit-password">Unlock Note</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button id="fab" class="btn btn-primary rounded-circle shadow-lg floating-3d" title="Add new note">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Confirmation Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3 toast-container-custom">
+        <div id="confirmationToast" class="toast note-card-3d" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toast-message">
+                Note saved successfully!
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="script.js"></script>
+    <script src="particles.js"></script>
+</body>
+</html>

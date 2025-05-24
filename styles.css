@@ -1,0 +1,547 @@
+:root {
+    --primary-color: #4a6fa5;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --body-bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --text-color: #212529;
+    --gradient-start: #6a11cb;
+    --gradient-end: #2575fc;
+}
+
+[data-theme="dark"] {
+    --primary-color: #5d8acd;
+    --secondary-color: #7a8288;
+    --success-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+    --info-color: #3498db;
+    --light-color: #343a40;
+    --dark-color: #f8f9fa;
+    --body-bg: #212529;
+    --card-bg: #2c3034;
+    --text-color: #f8f9fa;
+    --gradient-start: #2575fc;
+    --gradient-end: #6a11cb;
+}
+
+body {
+    background-color: var(--body-bg);
+    color: var(--text-color);
+    transition: all 0.5s ease;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* 3D Card Effects */
+.note-card-3d {
+    transform-style: preserve-3d;
+    transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+    perspective: 1000px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.note-card-3d:hover {
+    transform: rotateY(10deg) rotateX(3deg) translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Gradient Mesh Background */
+#gradient-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.2;
+}
+
+/* 3D Floating Animation */
+@keyframes float3d {
+    0%, 100% { transform: translateY(0) rotateY(0); }
+    50% { transform: translateY(-15px) rotateY(5deg); }
+}
+
+.floating-3d {
+    animation: float3d 6s ease-in-out infinite;
+}
+
+/* Color Picker Enhancements */
+.color-palette {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.color-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.color-option:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.color-option.selected {
+    border: 2px solid var(--primary-color);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+/* Gradient Text */
+.gradient-text {
+    background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradientShift 8s ease infinite;
+    background-size: 200% 200%;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Floating Labels */
+.floating-label {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.floating-label input, .floating-label textarea {
+    padding-top: 1.5rem;
+    min-height: 50px;
+}
+
+.floating-label label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    padding: 1rem 0.75rem;
+    pointer-events: none;
+    border: 1px solid transparent;
+    transform-origin: 0 0;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.floating-label input:focus ~ label,
+.floating-label input:not(:placeholder-shown) ~ label,
+.floating-label textarea:focus ~ label,
+.floating-label textarea:not(:placeholder-shown) ~ label {
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+/* Cards */
+.card {
+    background-color: var(--card-bg);
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+    font-weight: 600;
+    border-bottom: none;
+}
+
+/* Note Cards */
+.note-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-left: 4px solid;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+}
+
+.note-card:hover {
+    transform: translateY(-5px) rotateY(5deg);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.note-card.low-priority {
+    border-left-color: var(--success-color);
+}
+
+.note-card.medium-priority {
+    border-left-color: var(--warning-color);
+}
+
+.note-card.high-priority {
+    border-left-color: var(--danger-color);
+}
+
+.note-card .card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.note-card .card-title {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.note-card:hover .card-title {
+    color: var(--primary-color);
+}
+
+.note-card .card-text {
+    flex-grow: 1;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+    max-height: 120px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.note-card .card-text:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, var(--card-bg) 100%);
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .note-card .card-text:after {
+    background: linear-gradient(to bottom, rgba(44,48,52,0) 0%, var(--card-bg) 100%);
+}
+
+.note-card .note-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+}
+
+.note-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.note-actions .btn {
+    flex: 1;
+    transition: all 0.3s ease;
+}
+
+.note-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.priority-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.badge-low {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: var(--success-color);
+}
+
+.badge-medium {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: var(--warning-color);
+}
+
+.badge-high {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: var(--danger-color);
+}
+
+[data-theme="dark"] .badge-low {
+    background-color: rgba(40, 167, 69, 0.3);
+}
+
+[data-theme="dark"] .badge-medium {
+    background-color: rgba(255, 193, 7, 0.3);
+}
+
+[data-theme="dark"] .badge-high {
+    background-color: rgba(220, 53, 69, 0.3);
+}
+
+/* Buttons */
+.btn {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.save-btn {
+    background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.save-btn:after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(30deg);
+    transition: all 0.3s ease;
+}
+
+.save-btn:hover:after {
+    left: 100%;
+}
+
+.unlock-btn {
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    border: none;
+}
+
+.priority-btn {
+    transition: all 0.3s ease;
+}
+
+.priority-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* Fancy Switch */
+.fancy-switch .form-check-input {
+    width: 3em;
+    height: 1.5em;
+    margin-right: 0.5em;
+}
+
+.fancy-switch .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Fancy Select */
+.fancy-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    border-radius: 8px;
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.fancy-select:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(74, 111, 165, 0.25);
+}
+
+[data-theme="dark"] .fancy-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f8f9fa' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+/* Color Preview */
+.color-preview {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--secondary-color);
+    transition: all 0.3s ease;
+}
+
+.color-preview:hover {
+    transform: scale(1.1);
+}
+
+/* Password Protection */
+.protected-note-content {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(248, 249, 250, 0.7);
+    border-radius: 0.25rem;
+    margin: -15px;
+    cursor: default !important;
+    transition: all 0.3s ease;
+}
+
+.protected-note-content i {
+    opacity: 0.5;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.password-toggle-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+}
+
+.password-toggle-icon:hover {
+    color: var(--primary-color);
+}
+
+.password-input-group {
+    position: relative;
+}
+
+/* Floating Action Button */
+#fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+    animation: bounce 2s infinite;
+}
+
+#fab:hover {
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Floating Alert */
+.floating-alert {
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Empty State */
+.empty-state {
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.empty-state i {
+    opacity: 0.5;
+    animation: float 4s ease-in-out infinite;
+}
+
+/* Toast */
+.toast {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.toast-header {
+    border-bottom: none;
+}
+
+/* Dark mode toggle */
+#dark-mode-toggle.active {
+    background-color: var(--dark-color);
+    color: var(--light-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .sidebar {
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .note-actions {
+        flex-direction: column;
+    }
+    
+    #fab {
+        bottom: 1rem;
+        right: 1rem;
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+    
+    .note-card-3d:hover {
+        transform: none;
+    }
+}
+
+/* Particle Background for Notes */
+.note-particle-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.1;
+    pointer-events: none;
+}
